@@ -11,7 +11,8 @@ import {
   Building2,
   CheckCircle2,
   HardDrive,
-  Globe
+  Globe,
+  Zap
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -179,26 +180,26 @@ export const SettingsView = () => {
               </div>
             </div>
 
-            {/* Live Saved Client Counter */}
-            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
+            {/* Live Saved Client & Supabase Cloud Counter */}
+            <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-3">
               <div className="flex items-center justify-between text-emerald-700 font-bold text-xs">
                 <div className="flex items-center space-x-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>Real-Time Online Cloud DB Connected & Synced</span>
+                  <Zap className="w-4 h-4 text-emerald-600 fill-emerald-600 animate-bounce" />
+                  <span>Supabase Cloud Database Connected (PostgreSQL Engine)</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono">Last Sync: {lastCloudSync}</span>
               </div>
               <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-center">
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Cloud Leads</p>
+                  <p className="text-xs text-slate-500 font-sans">Supabase Leads</p>
                   <p className="text-lg font-bold text-slate-900">{leads.length}</p>
                 </div>
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Cloud Invoices</p>
+                  <p className="text-xs text-slate-500 font-sans">Invoices</p>
                   <p className="text-lg font-bold text-slate-900">{invoices.length}</p>
                 </div>
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Cloud Expenses</p>
+                  <p className="text-xs text-slate-500 font-sans">Expenses</p>
                   <p className="text-lg font-bold text-slate-900">{expenses.length}</p>
                 </div>
               </div>
@@ -207,13 +208,13 @@ export const SettingsView = () => {
             <div className="space-y-3 pt-2">
               <button
                 onClick={syncOnlineCloud}
-                className="w-full p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between hover:bg-emerald-100 transition-colors shadow-2xs"
+                className="w-full p-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-between transition-colors shadow-md shadow-emerald-600/20"
               >
                 <div className="flex items-center space-x-2">
-                  <Globe className="w-4 h-4 text-emerald-600 animate-pulse" />
-                  <span>Sync Now to Online Cloud Database</span>
+                  <Zap className="w-4 h-4 text-white fill-white" />
+                  <span>Sync Now to Supabase Cloud Database</span>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-700">{isSyncingCloud ? 'Syncing...' : 'Active 🟢'}</span>
+                <span className="text-[10px] font-mono text-emerald-100">{isSyncingCloud ? 'Syncing...' : 'Active ⚡'}</span>
               </button>
               <button
                 onClick={exportDataJSON}

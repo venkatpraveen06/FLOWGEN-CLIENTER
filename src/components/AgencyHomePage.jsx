@@ -358,12 +358,13 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             <div className="w-12 h-12 rounded-2xl bg-fuchsia-600 text-white flex items-center justify-center shadow-lg hover:rotate-12 transition-transform"><Sparkles className="w-6 h-6" /></div>
           </div>
 
-          {/* Center WhatsApp Phone Mockup (STILL & REALISTIC ANIMATED CHAT) */}
-          <div className="w-72 sm:w-80 bg-slate-900 p-3.5 rounded-[40px] border-4 border-slate-800 shadow-2xl shrink-0 text-left">
+          {/* Center WhatsApp Mockup (Clean Borderless Floating Container) */}
+          <div className="w-72 sm:w-80 rounded-3xl border border-slate-200/80 shadow-2xl shrink-0 text-left overflow-hidden bg-white">
             {/* Header */}
-            <div className="bg-[#075e54] text-white p-3.5 rounded-t-[30px] flex items-center space-x-3 shadow">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center shrink-0 border border-white/20">
-                FG
+            <div className="bg-[#075e54] text-white p-3.5 rounded-t-3xl flex items-center space-x-3 shadow">
+              {/* WhatsApp DP Avatar with Official FlowGen Logo */}
+              <div className="w-9 h-9 rounded-full bg-white border-2 border-white/40 flex items-center justify-center shrink-0 p-1 shadow-md overflow-hidden">
+                <FlowGenLogo className="w-7 h-7" showText={false} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-1">
@@ -417,7 +418,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </div>
 
             {/* Interactive Live Message Input */}
-            <form onSubmit={handleSendCustomMessage} className="p-2 bg-slate-100 rounded-b-[30px] flex items-center space-x-2">
+            <form onSubmit={handleSendCustomMessage} className="p-2.5 bg-slate-100/90 rounded-b-3xl flex items-center space-x-2 border-t border-slate-200/80">
               <input
                 type="text"
                 value={userCustomInput}

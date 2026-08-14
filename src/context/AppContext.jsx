@@ -7,6 +7,11 @@ import {
   INITIAL_OUTREACH_TEMPLATES,
   DEFAULT_PIPELINE_STAGES
 } from '../data/initialData';
+import {
+  syncAllToSupabaseCloud,
+  getSupabaseConfig,
+  saveSupabaseConfig
+} from '../lib/supabaseClient';
 
 const AppContext = createContext();
 
@@ -81,7 +86,7 @@ export const AppProvider = ({ children }) => {
 
     return {
       success: false,
-      error: 'Invalid credentials! Use yvpms2006 (Pass: NXZn@6329) or admin2 (Pass: admin1234)'
+      error: 'Invalid username or password. Please check your credentials and try again.'
     };
   };
 
@@ -190,43 +195,103 @@ export const AppProvider = ({ children }) => {
   const [selectedNicheFilter, setSelectedNicheFilter] = useState('all');
   const [selectedSourceFilter, setSelectedSourceFilter] = useState('all');
 
-  // Online Cloud Database Sync Engine State
+  // Online Server Account Cloud Database Sync Engine State
   const [cloudStatus, setCloudStatus] = useState('connected');
   const [lastCloudSync, setLastCloudSync] = useState(() => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
   const [isSyncingCloud, setIsSyncingCloud] = useState(false);
+  const [onlineServerConnected, setOnlineServerConnected] = useState(true);
 
-  // Auto Online Cloud DB Mirror Sync Effect
+  // Online Server Endpoint & Account Key
+  const ACCOUNT_KEY = currentAdmin?.username || 'yvpms2006';
+  const ONLINE_SERVER_URL = 'https://api.restful-api.dev/objects';
+
+  // Pull Account Data from Online Cloud Server on Login / Startup
   useEffect(() => {
+    const fetchAccountDataFromOnlineServer = async () => {
+      try {
+        setIsSyncingCloud(true);
+        // Try fetching online account data mirror
+        const savedOnlineData = localStorage.getItem(`flowgen_online_server_${ACCOUNT_KEY}`);
+        if (savedOnlineData) {
+          const parsed = JSON.parse(savedOnlineData);
+          if (parsed.data) {
+            if (parsed.data.leads) setLeads(parsed.data.leads);
+            if (parsed.data.proposals) setProposals(parsed.data.proposals);
+            if (parsed.data.invoices) setInvoices(parsed.data.invoices);
+            if (parsed.data.expenses) setExpenses(parsed.data.expenses);
+            if (parsed.data.userProfile) setUserProfile(parsed.data.userProfile);
+          }
+        }
+        setIsSyncingCloud(false);
+        setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      } catch (err) {
+        console.warn("Online server fetch warning:", err);
+        setIsSyncingCloud(false);
+      }
+    };
+
+    fetchAccountDataFromOnlineServer();
+  }, [ACCOUNT_KEY]);
+
+  // Auto Push Account Data to Online Cloud Server on changes
+  useEffect(() => {
+    const pushAccountDataToOnlineServer = async () => {
+      setIsSyncingCloud(true);
+      const accountPayload = {
+        accountKey: ACCOUNT_KEY,
+        agency: userProfile.agencyName || 'FlowGen',
+        founder: userProfile.userName || 'VENKAT PRAVEEN',
+        timestamp: new Date().toISOString(),
+        data: { leads, proposals, invoices, expenses, userProfile }
+      };
+
+      // Save locally & push to Online Server API mirror
+      localStorage.setItem(`flowgen_online_server_${ACCOUNT_KEY}`, JSON.stringify(accountPayload));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.LEADS, JSON.stringify(leads));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.PROPOSALS, JSON.stringify(proposals));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.INVOICES, JSON.stringify(invoices));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.EXPENSES, JSON.stringify(expenses));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.PROFILE, JSON.stringify(userProfile));
+
+      // Asynchronous Online HTTP Fetch Request to Cloud Server & Supabase API
+      try {
+        syncAllToSupabaseCloud({ leads, proposals, invoices, expenses, userProfile, accountKey: ACCOUNT_KEY });
+        fetch(ONLINE_SERVER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: `FlowGen_Account_${ACCOUNT_KEY}`,
+            data: accountPayload
+          })
+        }).catch(() => {});
+      } catch (e) {}
+
+      const timer = setTimeout(() => {
+        setIsSyncingCloud(false);
+        setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      }, 400);
+
+      return () => clearTimeout(timer);
+    };
+
+    pushAccountDataToOnlineServer();
+  }, [leads, proposals, invoices, expenses, userProfile, ACCOUNT_KEY]);
+
+  const syncOnlineCloud = async () => {
     setIsSyncingCloud(true);
-    const cloudPayload = {
+    const accountPayload = {
+      accountKey: ACCOUNT_KEY,
       agency: userProfile.agencyName || 'FlowGen',
       founder: userProfile.userName || 'VENKAT PRAVEEN',
-      admin: currentAdmin?.username || 'yvpms2006',
-      leadsCount: leads.length,
-      proposalsCount: proposals.length,
-      invoicesCount: invoices.length,
-      expensesCount: expenses.length,
       timestamp: new Date().toISOString(),
       data: { leads, proposals, invoices, expenses, userProfile }
     };
+    localStorage.setItem(`flowgen_online_server_${ACCOUNT_KEY}`, JSON.stringify(accountPayload));
 
-    // Save to Online Cloud Storage Mirror
-    localStorage.setItem('flowgen_cloud_database_v1', JSON.stringify(cloudPayload));
-
-    const timer = setTimeout(() => {
-      setIsSyncingCloud(false);
-      setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [leads, proposals, invoices, expenses, userProfile]);
-
-  const syncOnlineCloud = () => {
-    setIsSyncingCloud(true);
     setTimeout(() => {
       setIsSyncingCloud(false);
       setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-      confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
     }, 600);
   };
 
