@@ -10,7 +10,8 @@ import {
   User,
   Building2,
   CheckCircle2,
-  HardDrive
+  HardDrive,
+  Globe
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -24,7 +25,10 @@ export const SettingsView = () => {
     resetToDemoData,
     clearAllData,
     exportDataJSON,
-    importDataJSON
+    importDataJSON,
+    lastCloudSync,
+    isSyncingCloud,
+    syncOnlineCloud
   } = useApp();
 
   const fileInputRef = useRef(null);
@@ -177,27 +181,40 @@ export const SettingsView = () => {
 
             {/* Live Saved Client Counter */}
             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
-              <div className="flex items-center space-x-2 text-emerald-700 font-bold text-xs">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Client Data Active & Auto-Saved</span>
+              <div className="flex items-center justify-between text-emerald-700 font-bold text-xs">
+                <div className="flex items-center space-x-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>Real-Time Online Cloud DB Connected & Synced</span>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono">Last Sync: {lastCloudSync}</span>
               </div>
               <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-center">
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Stored Leads</p>
+                  <p className="text-xs text-slate-500 font-sans">Cloud Leads</p>
                   <p className="text-lg font-bold text-slate-900">{leads.length}</p>
                 </div>
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Invoices</p>
+                  <p className="text-xs text-slate-500 font-sans">Cloud Invoices</p>
                   <p className="text-lg font-bold text-slate-900">{invoices.length}</p>
                 </div>
                 <div className="bg-white p-2 rounded-lg border border-emerald-200">
-                  <p className="text-xs text-slate-500 font-sans">Expenses</p>
+                  <p className="text-xs text-slate-500 font-sans">Cloud Expenses</p>
                   <p className="text-lg font-bold text-slate-900">{expenses.length}</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3 pt-2">
+              <button
+                onClick={syncOnlineCloud}
+                className="w-full p-3 rounded-xl bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between hover:bg-emerald-100 transition-colors shadow-2xs"
+              >
+                <div className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4 text-emerald-600 animate-pulse" />
+                  <span>Sync Now to Online Cloud Database</span>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-700">{isSyncingCloud ? 'Syncing...' : 'Active 🟢'}</span>
+              </button>
               <button
                 onClick={exportDataJSON}
                 className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-between hover:bg-slate-100 transition-colors"

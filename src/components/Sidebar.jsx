@@ -83,12 +83,12 @@ export const Sidebar = () => {
           </button>
         </div>
 
-        {/* Grouped Navigation */}
-        <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-240px)] pr-1">
+        {/* Grouped Navigation (Spacious Layout, No Scroll) */}
+        <div className="space-y-3 overflow-hidden flex-1 py-1">
           {navGroups.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
               {group.title && (
-                <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                <p className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mt-2 mb-1">
                   {group.title}
                 </p>
               )}
@@ -105,19 +105,19 @@ export const Sidebar = () => {
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(tabId)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl font-semibold text-xs transition-all ${
+                    className={`w-full flex items-center justify-between px-3.5 py-2 rounded-xl font-semibold text-xs sidebar-btn-slide group ${
                       isActive
-                        ? 'bg-blue-50/90 text-blue-700 font-extrabold shadow-sm border border-blue-200/60'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                        ? 'bg-blue-50/90 text-blue-700 font-extrabold shadow-xs border border-blue-200/60 translate-x-1.5'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 hover:translate-x-1.5'
                     }`}
                   >
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                    <div className="flex items-center space-x-2.5">
+                      <Icon className={`w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-blue-600'}`} />
                       <span>{item.label}</span>
                     </div>
                     {item.badge !== null && item.badge !== undefined && (
                       <span
-                        className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200/80"
+                        className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 transition-transform group-hover:scale-105"
                       >
                         {item.badge}
                       </span>

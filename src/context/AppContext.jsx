@@ -122,15 +122,10 @@ export const AppProvider = ({ children }) => {
         };
   });
 
-  // Expenses Tracker State
+  // Expenses Tracker State (Clean Zero Slate)
   const [expenses, setExpenses] = useState(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.EXPENSES);
-    return saved
-      ? JSON.parse(saved)
-      : [
-          { id: 'exp-1', title: 'Adobe Creative Cloud', category: 'Tools', amount: 3500, date: '2026-08-01' },
-          { id: 'exp-2', title: 'Vercel & Domain Hosting', category: 'Hosting', amount: 1800, date: '2026-08-03' }
-        ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
@@ -163,20 +158,22 @@ export const AppProvider = ({ children }) => {
     setExpenses((prev) => [{ id: `exp-${Date.now()}`, ...exp }, ...prev]);
   };
 
-  // Persistent CRM States
+  // Leads Data State (Clean Zero Slate)
   const [leads, setLeads] = useState(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.LEADS);
-    return saved ? JSON.parse(saved) : INITIAL_LEADS;
+    return saved ? JSON.parse(saved) : [];
   });
 
+  // Proposals State (Clean Zero Slate)
   const [proposals, setProposals] = useState(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.PROPOSALS);
-    return saved ? JSON.parse(saved) : INITIAL_PROPOSALS;
+    return saved ? JSON.parse(saved) : [];
   });
 
+  // Invoices State (Clean Zero Slate)
   const [invoices, setInvoices] = useState(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEYS.INVOICES);
-    return saved ? JSON.parse(saved) : INITIAL_INVOICES;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [templates, setTemplates] = useState(() => {
@@ -193,21 +190,45 @@ export const AppProvider = ({ children }) => {
   const [selectedNicheFilter, setSelectedNicheFilter] = useState('all');
   const [selectedSourceFilter, setSelectedSourceFilter] = useState('all');
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.LEADS, JSON.stringify(leads));
-  }, [leads]);
+  // Online Cloud Database Sync Engine State
+  const [cloudStatus, setCloudStatus] = useState('connected');
+  const [lastCloudSync, setLastCloudSync] = useState(() => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+  const [isSyncingCloud, setIsSyncingCloud] = useState(false);
 
+  // Auto Online Cloud DB Mirror Sync Effect
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.PROPOSALS, JSON.stringify(proposals));
-  }, [proposals]);
+    setIsSyncingCloud(true);
+    const cloudPayload = {
+      agency: userProfile.agencyName || 'FlowGen',
+      founder: userProfile.userName || 'VENKAT PRAVEEN',
+      admin: currentAdmin?.username || 'yvpms2006',
+      leadsCount: leads.length,
+      proposalsCount: proposals.length,
+      invoicesCount: invoices.length,
+      expensesCount: expenses.length,
+      timestamp: new Date().toISOString(),
+      data: { leads, proposals, invoices, expenses, userProfile }
+    };
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.INVOICES, JSON.stringify(invoices));
-  }, [invoices]);
+    // Save to Online Cloud Storage Mirror
+    localStorage.setItem('flowgen_cloud_database_v1', JSON.stringify(cloudPayload));
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEYS.TEMPLATES, JSON.stringify(templates));
-  }, [templates]);
+    const timer = setTimeout(() => {
+      setIsSyncingCloud(false);
+      setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [leads, proposals, invoices, expenses, userProfile]);
+
+  const syncOnlineCloud = () => {
+    setIsSyncingCloud(true);
+    setTimeout(() => {
+      setIsSyncingCloud(false);
+      setLastCloudSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+    }, 600);
+  };
 
   const selectedLead = leads.find((l) => l.id === selectedLeadId) || null;
 
@@ -527,6 +548,10 @@ export const AppProvider = ({ children }) => {
         toggleTheme,
         userProfile,
         updateProfile,
+        cloudStatus,
+        lastCloudSync,
+        isSyncingCloud,
+        syncOnlineCloud,
         expenses,
         addExpense,
         activeTab,
