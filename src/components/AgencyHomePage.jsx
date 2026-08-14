@@ -30,7 +30,9 @@ import {
   Clock,
   Activity,
   Award,
-  CircleCheck
+  CircleCheck,
+  Menu,
+  X
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useApp } from '../context/AppContext';
@@ -40,10 +42,9 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
   const { userProfile, addLead } = useApp();
   const curr = userProfile.currencySymbol || '₹';
 
-  // Mega Menu State
+  // Mobile Navigation Drawer State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
-
-  // Active FAQ Accordion State
   const [activeFaq, setActiveFaq] = useState(0);
 
   // REALISTIC STEP-BY-STEP WHATSAPP CHAT ANIMATION ENGINE
@@ -66,45 +67,38 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
   useEffect(() => {
     let timer;
     if (chatStep === 0) {
-      // Step 1: User sends requirement after 1.2s
       timer = setTimeout(() => {
         setVisibleMessages(prev => [...prev, initialScript[1]]);
         setChatStep(1);
       }, 1200);
     } else if (chatStep === 1) {
-      // Step 2: Bot shows typing indicator after 1s
       timer = setTimeout(() => {
         setIsTyping(true);
         setChatStep(2);
       }, 1000);
     } else if (chatStep === 2) {
-      // Step 3: Bot posts message after typing 1.5s
       timer = setTimeout(() => {
         setIsTyping(false);
         setVisibleMessages(prev => [...prev, initialScript[2]]);
         setChatStep(3);
       }, 1500);
     } else if (chatStep === 3) {
-      // Step 4: User selects option after 1.5s
       timer = setTimeout(() => {
         setVisibleMessages(prev => [...prev, initialScript[3]]);
         setChatStep(4);
       }, 1500);
     } else if (chatStep === 4) {
-      // Step 5: Bot shows typing indicator
       timer = setTimeout(() => {
         setIsTyping(true);
         setChatStep(5);
       }, 1000);
     } else if (chatStep === 5) {
-      // Step 6: Bot posts final confirmation
       timer = setTimeout(() => {
         setIsTyping(false);
         setVisibleMessages(prev => [...prev, initialScript[4]]);
         setChatStep(6);
       }, 1500);
     } else if (chatStep === 6) {
-      // Step 7: Restart loop after 6s for continuous live demo
       timer = setTimeout(() => {
         setVisibleMessages([initialScript[0]]);
         setChatStep(0);
@@ -222,17 +216,17 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
       {/* Ambient Background Blur Motion Orbs */}
-      <div className="absolute top-10 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none ambient-orb-1" />
-      <div className="absolute top-96 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none ambient-orb-2" />
+      <div className="absolute top-10 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none ambient-orb-1" />
+      <div className="absolute top-96 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none ambient-orb-2" />
 
-      {/* 1. Floating Pill Navbar with Glassmorphism */}
-      <div className="fixed top-4 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none">
-        <nav className="pointer-events-auto bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-full px-5 py-3 shadow-lg flex items-center justify-between w-full max-w-5xl transition-all duration-300">
+      {/* 1. Floating Pill Navbar with Glassmorphism & Mobile Menu Drawer */}
+      <div className="fixed top-3 left-0 right-0 z-50 px-3 md:px-4 flex justify-center pointer-events-none">
+        <nav className="pointer-events-auto bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-full px-4 md:px-5 py-2.5 md:py-3 shadow-lg flex items-center justify-between w-full max-w-5xl transition-all duration-300">
           <a href="#" className="flex items-center space-x-2">
             <FlowGenLogo className="w-7 h-7" showText={true} />
           </a>
 
-          {/* Navigation Links with Mega Menu */}
+          {/* Desktop Navigation Links with Mega Menu */}
           <div className="hidden md:flex items-center space-x-7 text-xs font-semibold text-slate-700">
             <div
               className="relative py-1"
@@ -276,8 +270,8 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
           </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center space-x-3">
+          {/* Right Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-3">
             <button
               onClick={onNavigateAdmin}
               className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center space-x-1.5 transition-all hover:scale-105 active:scale-95"
@@ -292,17 +286,64 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               Book a demo
             </a>
           </div>
+
+          {/* Mobile Hamburger Toggle Button */}
+          <div className="flex md:hidden items-center space-x-2">
+            <button
+              onClick={onNavigateAdmin}
+              className="p-2 rounded-full bg-slate-100 text-blue-700 font-bold text-xs"
+              title="Admin Portal"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-full bg-slate-900 text-white"
+              aria-label="Toggle navigation menu"
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
         </nav>
       </div>
 
-      {/* 2. Hero Section with Expressive Typography & Microinteractions */}
-      <section className="pt-32 pb-20 px-4 md:px-8 max-w-6xl mx-auto text-center space-y-8 relative">
-        {/* Doodle Web Micro-sparkles */}
-        <div className="absolute top-24 left-10 text-amber-500 doodle-animated hidden sm:block">✦</div>
-        <div className="absolute top-40 right-10 text-blue-500 doodle-animated hidden sm:block">★</div>
+      {/* Mobile Navigation Glass Overlay Drawer */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-white/98 backdrop-blur-2xl p-6 pt-24 space-y-6 flex flex-col justify-between animate-in slide-in-from-top duration-300 md:hidden">
+          <div className="space-y-4">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Navigation</p>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#services" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Services</a>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#solutions" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Industry Focus</a>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#pricing" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Pricing</a>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#faq" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">FAQ</a>
+            <a onClick={() => setIsMobileMenuOpen(false)} href="#contact" className="block text-lg font-bold text-blue-600 border-b border-slate-100 pb-3">Schedule Consultation</a>
+          </div>
 
+          <div className="space-y-3 pt-4 border-t border-slate-200">
+            <button
+              onClick={() => { setIsMobileMenuOpen(false); onNavigateAdmin(); }}
+              className="w-full py-3.5 rounded-2xl bg-slate-100 text-slate-900 font-bold text-sm flex items-center justify-center space-x-2"
+            >
+              <Lock className="w-4 h-4 text-blue-600" />
+              <span>Admin Portal Login</span>
+            </button>
+            <a
+              onClick={() => setIsMobileMenuOpen(false)}
+              href="#contact"
+              className="w-full py-3.5 rounded-2xl bg-slate-900 text-white font-bold text-sm flex items-center justify-center space-x-2"
+            >
+              <span>Book a Demo</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* 2. Hero Section with Mobile Responsive Container */}
+      <section className="pt-28 sm:pt-32 pb-16 md:pb-20 px-4 md:px-8 max-w-6xl mx-auto text-center space-y-6 sm:space-y-8 relative">
         {/* Meta Business Partner Badge */}
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold shadow-sm hover:border-blue-300 transition-all cursor-default">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-xs font-semibold shadow-sm cursor-default">
           <svg className="w-4 h-4 text-blue-600 fill-current animate-pulse" viewBox="0 0 24 24">
             <path d="M16.96 4.04C14.87 4.04 13.11 5.37 12 7.05C10.89 5.37 9.13 4.04 7.04 4.04C3.15 4.04 0 7.19 0 11.08C0 16.36 7.6 20.08 11.45 20.91C11.81 20.99 12.19 20.99 12.55 20.91C16.4 20.08 24 16.36 24 11.08C24 7.19 20.85 4.04 16.96 4.04ZM7.04 18.04C4.38 18.04 2.04 15.7 2.04 13.04C2.04 10.38 4.38 8.04 7.04 8.04C9.28 8.04 11.04 9.8 11.04 12.04C11.04 15.35 8.7 18.04 7.04 18.04ZM16.96 18.04C15.3 18.04 12.96 15.35 12.96 12.04C12.96 9.8 14.72 8.04 16.96 8.04C19.62 18.04 21.96 10.38 21.96 13.04C21.96 15.7 19.62 18.04 16.96 18.04Z" />
           </svg>
@@ -310,13 +351,13 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
-          Turn your <span className="inline-flex items-center px-2.5 py-0.5 rounded-2xl bg-emerald-100 text-emerald-700 align-middle shadow-sm hover:scale-105 transition-transform"><MessageSquare className="w-7 h-7 sm:w-10 sm:h-10 fill-current animate-bounce" /></span> WhatsApp into a
-          <div className="gradient-text font-black text-5xl sm:text-7xl pt-2">business engine</div>
+        <h1 className="text-3xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl mx-auto">
+          Turn your <span className="inline-flex items-center px-2 py-0.5 rounded-2xl bg-emerald-100 text-emerald-700 align-middle shadow-sm"><MessageSquare className="w-6 h-6 sm:w-10 sm:h-10 fill-current animate-bounce" /></span> WhatsApp into a
+          <div className="gradient-text font-black text-4xl sm:text-7xl pt-2">business engine</div>
         </h1>
 
         {/* Checkmarks Row */}
-        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-slate-700">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs font-bold text-slate-700">
           <div className="flex items-center space-x-2">
             <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-sm"><Check className="w-3.5 h-3.5 stroke-[3]" /></span>
             <span>Official Meta partner</span>
@@ -332,7 +373,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
         </div>
 
         {/* Hero CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
           <a
             href="#contact"
             className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-xl flex items-center justify-center space-x-2 transition-all hover:scale-105 active:scale-95"
@@ -349,8 +390,8 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
           </a>
         </div>
 
-        {/* Hero Visual Container */}
-        <div className="pt-10 max-w-4xl mx-auto relative flex flex-col md:flex-row items-center justify-center gap-8">
+        {/* Hero Visual Mobile Responsive Container */}
+        <div className="pt-6 sm:pt-10 max-w-4xl mx-auto relative flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
           {/* Left App Stack Icons */}
           <div className="hidden lg:flex flex-col space-y-4 shrink-0 animate-float">
             <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg hover:rotate-12 transition-transform"><Globe className="w-6 h-6" /></div>
@@ -359,7 +400,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
           </div>
 
           {/* Center WhatsApp Mockup (Clean Borderless Floating Container) */}
-          <div className="w-72 sm:w-80 rounded-3xl border border-slate-200/80 shadow-2xl shrink-0 text-left overflow-hidden bg-white">
+          <div className="w-full max-w-[310px] sm:w-80 rounded-3xl border border-slate-200/80 shadow-2xl shrink-0 text-left overflow-hidden bg-white mx-auto">
             {/* Header */}
             <div className="bg-[#075e54] text-white p-3.5 rounded-t-3xl flex items-center space-x-3 shadow">
               {/* WhatsApp DP Avatar with Official FlowGen Logo */}
@@ -380,7 +421,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             {/* Chat Body Wallpaper with Real Animations */}
             <div
               ref={chatScrollRef}
-              className="bg-[#efeae2] p-3 space-y-3 h-[290px] max-h-[290px] overflow-y-auto text-[11px] relative shadow-inner scroll-smooth"
+              className="bg-[#efeae2] p-3 space-y-3 h-[270px] sm:h-[290px] max-h-[290px] overflow-y-auto text-[11px] relative shadow-inner scroll-smooth"
             >
               <div className="text-center">
                 <span className="px-2 py-0.5 rounded-md bg-white/80 backdrop-blur text-[9px] text-slate-500 font-semibold uppercase shadow-2xs">
@@ -423,7 +464,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
                 type="text"
                 value={userCustomInput}
                 onChange={(e) => setUserCustomInput(e.target.value)}
-                placeholder="Type a message to test demo..."
+                placeholder="Type a message..."
                 className="flex-1 bg-white border border-slate-300 rounded-full px-3 py-1.5 text-[10px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 font-medium"
               />
               <button
@@ -436,7 +477,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
           </div>
 
           {/* Right Floating Synchronized Meeting Card */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xl space-y-3 text-left shrink-0 w-60 animate-float neumorphic-glow">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xl space-y-3 text-left shrink-0 w-full max-w-[280px] sm:w-60 animate-float neumorphic-glow mx-auto">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div className="p-2 rounded-xl bg-amber-50 text-amber-600 font-bold">
@@ -460,39 +501,39 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 3. Trust & Stats Bar with Counter Animation */}
-      <section className="bg-slate-50 border-y border-slate-200 py-10 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <section className="bg-slate-50 border-y border-slate-200 py-8 md:py-10 px-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center">
           <div className="glass-card p-4 rounded-2xl">
-            <div className="text-3xl font-black text-blue-600">50+</div>
-            <p className="text-xs text-slate-600 font-semibold mt-1">Projects Delivered</p>
+            <div className="text-2xl sm:text-3xl font-black text-blue-600">50+</div>
+            <p className="text-[11px] sm:text-xs text-slate-600 font-semibold mt-1">Projects Delivered</p>
           </div>
           <div className="glass-card p-4 rounded-2xl">
-            <div className="text-3xl font-black text-blue-600">99.8%</div>
-            <p className="text-xs text-slate-600 font-semibold mt-1">System Uptime</p>
+            <div className="text-2xl sm:text-3xl font-black text-blue-600">99.8%</div>
+            <p className="text-[11px] sm:text-xs text-slate-600 font-semibold mt-1">System Uptime</p>
           </div>
           <div className="glass-card p-4 rounded-2xl">
-            <div className="text-3xl font-black text-blue-600">3x</div>
-            <p className="text-xs text-slate-600 font-semibold mt-1">Conversion Growth</p>
+            <div className="text-2xl sm:text-3xl font-black text-blue-600">3x</div>
+            <p className="text-[11px] sm:text-xs text-slate-600 font-semibold mt-1">Conversion Growth</p>
           </div>
           <div className="glass-card p-4 rounded-2xl">
-            <div className="text-3xl font-black text-blue-600">24/7</div>
-            <p className="text-xs text-slate-600 font-semibold mt-1">Managed Support</p>
+            <div className="text-2xl sm:text-3xl font-black text-blue-600">24/7</div>
+            <p className="text-[11px] sm:text-xs text-slate-600 font-semibold mt-1">Managed Support</p>
           </div>
         </div>
       </section>
 
-      {/* 4. Services Showcase with Hover Glassmorphic Motion */}
-      <section id="services" className="py-20 px-4 max-w-6xl mx-auto space-y-12">
+      {/* 4. Services Showcase */}
+      <section id="services" className="py-16 md:py-20 px-4 max-w-6xl mx-auto space-y-10 md:space-y-12">
         <div className="text-center space-y-3">
           <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">Capabilities</span>
-          <h2 className="text-3xl font-extrabold text-slate-900">Everything Your Business Needs to Scale</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Everything Your Business Needs to Scale</h2>
           <p className="text-xs text-slate-500 max-w-2xl mx-auto">
             We design and develop modern business websites, AI workflows, and WhatsApp automations.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 md:gap-6">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
               <Laptop className="w-5 h-5" />
             </div>
@@ -502,7 +543,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
               <Sparkles className="w-5 h-5" />
             </div>
@@ -512,7 +553,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
               <MessageSquare className="w-5 h-5" />
             </div>
@@ -522,7 +563,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
               <Code className="w-5 h-5" />
             </div>
@@ -532,7 +573,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
               <TrendingUp className="w-5 h-5" />
             </div>
@@ -542,7 +583,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             </p>
           </div>
 
-          <div className="glass-card p-6 rounded-2xl space-y-3">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-3">
             <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
               <Layers className="w-5 h-5" />
             </div>
@@ -555,16 +596,16 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 5. Industry Focus Section */}
-      <section id="solutions" className="py-20 px-4 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-6xl mx-auto space-y-12">
+      <section id="solutions" className="py-16 md:py-20 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
           <div className="text-center space-y-3">
             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">Industry Focus</span>
-            <h2 className="text-3xl font-extrabold text-slate-900">Tailored Solutions for Key Business Sectors</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Tailored Solutions for Key Business Sectors</h2>
             <p className="text-xs text-slate-500">Discover how Flowgen solves real digital and operational challenges across top industries.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card p-6 rounded-2xl space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+            <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600"><Utensils className="w-5 h-5" /></div>
                 <h4 className="font-bold text-slate-900 text-base">Restaurants</h4>
@@ -579,7 +620,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-4">
+            <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="p-2.5 rounded-xl bg-cyan-50 text-cyan-600"><Stethoscope className="w-5 h-5" /></div>
                 <h4 className="font-bold text-slate-900 text-base">Clinics</h4>
@@ -594,7 +635,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-4">
+            <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600"><Dumbbell className="w-5 h-5" /></div>
                 <h4 className="font-bold text-slate-900 text-base">Gyms</h4>
@@ -613,10 +654,10 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 6. 7-Step Methodology Journey Timeline */}
-      <section className="py-20 px-4 max-w-6xl mx-auto space-y-12">
+      <section className="py-16 md:py-20 px-4 max-w-6xl mx-auto space-y-10 md:space-y-12">
         <div className="text-center space-y-3">
           <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">Methodology</span>
-          <h2 className="text-3xl font-extrabold text-slate-900">Our 7-Step Development Journey</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Our 7-Step Development Journey</h2>
           <p className="text-xs text-slate-500">A transparent timeline from discovery to long-term post-launch support.</p>
         </div>
 
@@ -633,16 +674,16 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 7. Transparent Pricing Grid (Indian Rupees) */}
-      <section id="pricing" className="py-20 px-4 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-6xl mx-auto space-y-12">
+      <section id="pricing" className="py-16 md:py-20 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-6xl mx-auto space-y-10 md:space-y-12">
           <div className="text-center space-y-3">
             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">Pricing</span>
-            <h2 className="text-3xl font-extrabold text-slate-900">Transparent Indian Rupee Pricing</h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Transparent Indian Rupee Pricing</h2>
             <p className="text-xs text-slate-500">Select the plan that aligns best with your business growth goals in India.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
+            <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <h3 className="font-extrabold text-lg text-slate-900">Basic Plan</h3>
                 <div className="text-3xl font-black text-slate-900 font-mono">
@@ -659,7 +700,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               <a href="#contact" className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs text-center block transition-all">Book a demo</a>
             </div>
 
-            <div className="glass-card p-8 rounded-3xl border-2 border-blue-600 shadow-xl flex flex-col justify-between space-y-6 relative hover:scale-105 transition-all">
+            <div className="glass-card p-6 sm:p-8 rounded-3xl border-2 border-blue-600 shadow-xl flex flex-col justify-between space-y-6 relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold shadow">
                 Most Popular
               </div>
@@ -679,7 +720,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               <a href="#contact" className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs text-center block shadow-lg shadow-blue-600/20 transition-all">Book a demo</a>
             </div>
 
-            <div className="glass-card p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
+            <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <h3 className="font-extrabold text-lg text-slate-900">Enterprise / Custom</h3>
                 <div className="text-2xl font-extrabold text-slate-900">Let's talk</div>
@@ -698,10 +739,10 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 8. FAQ Accordion */}
-      <section id="faq" className="py-20 px-4 max-w-4xl mx-auto space-y-8">
+      <section id="faq" className="py-16 md:py-20 px-4 max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-3">
           <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">FAQ</span>
-          <h2 className="text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h2>
           <p className="text-xs text-slate-500">Clear answers regarding Flowgen's website development and AI workflows.</p>
         </div>
 
@@ -726,8 +767,8 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       </section>
 
       {/* 9. Inbound Demo / Consultation Contact Form (Feeds into Real CRM) */}
-      <section id="contact" className="py-20 px-4 bg-slate-50 border-t border-slate-200">
-        <div className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-xl space-y-8 glass-card">
+      <section id="contact" className="py-16 md:py-20 px-4 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-4xl mx-auto bg-white p-6 sm:p-12 rounded-3xl border border-slate-200 shadow-xl space-y-8 glass-card">
           <div className="text-center space-y-2 border-b border-slate-200 pb-6">
             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold font-mono">Get Started</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Schedule a Consultation</h2>
@@ -829,8 +870,8 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
 
       {/* 10. Multi-Column Footer */}
       <footer className="border-t border-slate-200 py-12 px-4 bg-slate-900 text-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 text-xs">
-          <div className="md:col-span-2 space-y-3">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 text-xs">
+          <div className="sm:col-span-2 space-y-3">
             <FlowGenLogo className="w-8 h-8" textClassName="font-extrabold text-xl text-white tracking-tight" showText={true} />
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
               Building premium digital experiences through websites, AI automation, WhatsApp automation, and custom software development.
