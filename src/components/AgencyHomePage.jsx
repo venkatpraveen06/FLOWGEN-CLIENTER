@@ -176,16 +176,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
       dealValue: Number(form.dealValue) || 6750,
       pricingType: 'retainer',
       projectName: 'WhatsApp Automation & Web Booking System',
-      addedBy: 'Website Inbound Inquiry',
-      qualification: {
-        budgetVerified: true,
-        urgencyLevel: 'high',
-        aiPitchHook: `Website quote request from ${form.contactName} for ${form.businessName} (${form.niche}).`
-      },
-      audit: {
-        hasWebsite: true,
-        notes: form.notes || 'Inbound demo request from Flowgen website.'
-      }
+      addedBy: 'Website Inbound Inquiry'
     });
 
     confetti({
@@ -195,6 +186,16 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
     });
 
     setSubmitted(true);
+  };
+
+  // Smooth Section Scroll Helper (Prevents URL Hash Reload Mismatches)
+  const scrollToSection = (e, sectionId) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setIsMobileMenuOpen(false);
+    const elem = document.getElementById(sectionId);
+    if (elem) {
+      elem.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const faqs = [
@@ -305,35 +306,38 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               )}
             </div>
 
-            <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
+            <a href="#pricing" onClick={(e) => scrollToSection(e, 'pricing')} className="hover:text-blue-600 transition-colors">Pricing</a>
             <button onClick={() => setActiveServiceModal('case-studies')} className="hover:text-blue-600 transition-colors">Case Studies</button>
-            <a href="#solutions" className="hover:text-blue-600 transition-colors">Why us</a>
-            <a href="#faq" className="hover:text-blue-600 transition-colors">FAQ</a>
+            <a href="#solutions" onClick={(e) => scrollToSection(e, 'solutions')} className="hover:text-blue-600 transition-colors">Why us</a>
+            <a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="hover:text-blue-600 transition-colors">FAQ</a>
           </div>
 
-          {/* Right Desktop Actions */}
+          {/* Right Desktop Actions - Lock Symbol Icon Only */}
           <div className="hidden md:flex items-center space-x-3">
             <button
               onClick={onNavigateAdmin}
-              className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center space-x-1.5 transition-all hover:scale-105 active:scale-95"
+              className="p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-blue-600 font-bold transition-all hover:scale-110 active:scale-95 shadow-2xs"
+              title="Admin Portal Login"
+              aria-label="Admin Portal Login"
             >
-              <Lock className="w-3.5 h-3.5 text-blue-600" />
-              <span>Admin Portal</span>
+              <Lock className="w-4 h-4 text-blue-600" />
             </button>
             <a
               href="#contact"
+              onClick={(e) => scrollToSection(e, 'contact')}
               className="px-4 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 btn-animated"
             >
               Book a demo
             </a>
           </div>
 
-          {/* Mobile Hamburger Toggle Button */}
+          {/* Mobile Lock Symbol & Hamburger Toggle */}
           <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={onNavigateAdmin}
-              className="p-2 rounded-full bg-slate-100 text-blue-700 font-bold text-xs"
-              title="Admin Portal"
+              className="p-2 rounded-full bg-slate-100 text-blue-700 font-bold text-xs hover:bg-slate-200 transition-all"
+              title="Admin Portal Login"
+              aria-label="Admin Portal Login"
             >
               <Lock className="w-4 h-4" />
             </button>
@@ -369,22 +373,22 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
               </button>
             </div>
             <button onClick={() => { setIsMobileMenuOpen(false); setActiveServiceModal('case-studies'); }} className="block w-full text-left text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Case Studies & Gallery</button>
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#solutions" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Industry Focus</a>
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#pricing" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Pricing</a>
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#faq" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">FAQ</a>
-            <a onClick={() => setIsMobileMenuOpen(false)} href="#contact" className="block text-lg font-bold text-blue-600 border-b border-slate-100 pb-3">Schedule Consultation</a>
+            <a onClick={(e) => scrollToSection(e, 'solutions')} href="#solutions" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Industry Focus</a>
+            <a onClick={(e) => scrollToSection(e, 'pricing')} href="#pricing" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">Pricing</a>
+            <a onClick={(e) => scrollToSection(e, 'faq')} href="#faq" className="block text-lg font-bold text-slate-900 border-b border-slate-100 pb-3">FAQ</a>
+            <a onClick={(e) => scrollToSection(e, 'contact')} href="#contact" className="block text-lg font-bold text-blue-600 border-b border-slate-100 pb-3">Schedule Consultation</a>
           </div>
 
           <div className="space-y-3 pt-4 border-t border-slate-200">
             <button
               onClick={() => { setIsMobileMenuOpen(false); onNavigateAdmin(); }}
-              className="w-full py-3.5 rounded-2xl bg-slate-100 text-slate-900 font-bold text-sm flex items-center justify-center space-x-2"
+              className="w-full py-3.5 rounded-2xl bg-slate-100 text-blue-600 font-bold text-sm flex items-center justify-center space-x-2 border border-slate-200"
+              title="Admin Portal Login"
             >
-              <Lock className="w-4 h-4 text-blue-600" />
-              <span>Admin Portal Login</span>
+              <Lock className="w-5 h-5 text-blue-600" />
             </button>
             <a
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => scrollToSection(e, 'contact')}
               href="#contact"
               className="w-full py-3.5 rounded-2xl bg-slate-900 text-white font-bold text-sm flex items-center justify-center space-x-2"
             >
