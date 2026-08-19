@@ -449,17 +449,17 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
           </button>
         </div>
 
-        {/* Hero Visual Mobile Responsive Container */}
-        <div className="pt-6 sm:pt-10 max-w-4xl mx-auto relative flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
-          {/* Left App Stack Icons */}
-          <div className="hidden lg:flex flex-col space-y-4 shrink-0 animate-float">
+        {/* Hero Visual Container - WhatsApp Mockup Dead Center */}
+        <div className="pt-6 sm:pt-10 max-w-5xl mx-auto relative flex items-center justify-center min-h-[360px]">
+          {/* Left Floating App Stack Icons */}
+          <div className="absolute left-0 lg:left-8 top-1/2 -translate-y-1/2 hidden md:flex flex-col space-y-4 shrink-0 animate-float z-10">
             <button onClick={() => setActiveServiceModal('business-websites')} className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg hover:rotate-12 transition-transform" title="Business Websites"><Globe className="w-6 h-6" /></button>
             <button onClick={() => setActiveServiceModal('whatsapp-automation')} className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg hover:rotate-12 transition-transform" title="WhatsApp API"><MessageSquare className="w-6 h-6" /></button>
             <button onClick={() => setActiveServiceModal('ai-automation')} className="w-12 h-12 rounded-2xl bg-fuchsia-600 text-white flex items-center justify-center shadow-lg hover:rotate-12 transition-transform" title="AI Automation"><Sparkles className="w-6 h-6" /></button>
           </div>
 
-          {/* Center WhatsApp Mockup (Clean Borderless Floating Container) */}
-          <div className="w-full max-w-[310px] sm:w-80 rounded-3xl border border-slate-200/80 shadow-2xl shrink-0 text-left overflow-hidden bg-white mx-auto">
+          {/* Center WhatsApp Phone Mockup (EXACT PAGE MIDPOINT) */}
+          <div className="w-full max-w-[320px] sm:w-[340px] rounded-3xl border border-slate-200/90 shadow-2xl shrink-0 text-left overflow-hidden bg-white mx-auto z-20 hover:shadow-blue-500/10 transition-shadow">
             {/* Header */}
             <div className="bg-[#075e54] text-white p-3.5 rounded-t-3xl flex items-center space-x-3 shadow">
               {/* WhatsApp DP Avatar with Official FlowGen Logo */}
@@ -480,10 +480,10 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
             {/* Chat Body Wallpaper with Real Animations */}
             <div
               ref={chatScrollRef}
-              className="bg-[#efeae2] p-3 space-y-3 h-[270px] sm:h-[290px] max-h-[290px] overflow-y-auto text-[11px] relative shadow-inner scroll-smooth"
+              className="bg-[#efeae2] p-3.5 space-y-3 h-[280px] sm:h-[300px] max-h-[300px] overflow-y-auto text-[11px] relative shadow-inner scroll-smooth"
             >
               <div className="text-center">
-                <span className="px-2 py-0.5 rounded-md bg-white/80 backdrop-blur text-[9px] text-slate-500 font-semibold uppercase shadow-2xs">
+                <span className="px-2.5 py-0.5 rounded-md bg-white/80 backdrop-blur text-[9px] text-slate-500 font-semibold uppercase shadow-2xs">
                   Today
                 </span>
               </div>
@@ -536,7 +536,7 @@ export const AgencyHomePage = ({ onNavigateAdmin }) => {
           </div>
 
           {/* Right Floating Synchronized Meeting Card */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xl space-y-3 text-left shrink-0 w-full max-w-[280px] sm:w-60 animate-float neumorphic-glow mx-auto">
+          <div className="absolute right-0 lg:right-8 top-1/2 -translate-y-1/2 bg-white p-4 rounded-2xl border border-slate-200 shadow-xl space-y-3 text-left shrink-0 w-60 animate-float neumorphic-glow hidden md:block z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <div className="p-2 rounded-xl bg-amber-50 text-amber-600 font-bold">
